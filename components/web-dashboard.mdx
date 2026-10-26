@@ -15,7 +15,7 @@ The web dashboard is built with C# and ASP.NET Core 8 MVC and is used by logisti
   <Card title="Live GPS Map" icon="map-pin">
     Watch all active drivers update their positions in real time via the Google Maps API, giving the office full visibility of the fleet.
   </Card>
-  <Card title="Delivery Monitoring" icon="check-circle">
+  <Card title="Delivery Monitoring" icon="circle-check">
     See confirmed deliveries update automatically as drivers scan packages in the field, so the office always has an accurate count.
   </Card>
   <Card title="SAP Sync" icon="rotate">
@@ -48,6 +48,8 @@ The web dashboard is built with C# and ASP.NET Core 8 MVC and is used by logisti
 <Tabs>
   <Tab title="Backend (C#)">
     The server side is built on ASP.NET Core 8 MVC. **Controllers** handle all route logic: they receive HTTP requests from Razor views, validate input, execute SQL queries against SQL Server, and dispatch OData v4 calls to the SAP Business One Service Layer. **Models** map directly to the SQL Server tables that store routes, stops, drivers, and delivery confirmations. When a route is saved or a delivery confirmed, the controller also sends the corresponding update to SAP so the ERP stays consistent without any manual re-entry.
+
+    <Note>The snippet below is an illustrative skeleton showing the pattern used by route controllers. It is not a copy-paste runnable excerpt.</Note>
 
     ```csharp RouteController.cs
     [HttpPost]

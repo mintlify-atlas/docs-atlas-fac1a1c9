@@ -1,5 +1,5 @@
 ---
-title: "Scanmex Logistics Tracker: System Overview"
+title: "Scanmex Logistics Tracker: GPS Delivery System Overview"
 sidebarTitle: "Introduction"
 description: "Two-app logistics system for Scanmex: a C# ASP.NET Core 8 MVC web dashboard and an Android app for Zebra terminals, both synced to SAP Business One."
 ---
@@ -8,13 +8,17 @@ Scanmex Logistics Tracker is a two-application system that replaces paper-based 
 
 ## The problem
 
+Scanmex faced two root problems: the company had no visibility into where its fleet was at any moment, and it could not give customers any reliable ETA for their incoming deliveries.
+
 <Note>
-  Scanmex faced two root problems: the company had **no visibility into where its fleet was at any moment**, and it could **not give customers any ETA** for their incoming deliveries.
+  Both problems shared the same root cause — once a driver left the warehouse, there was **no data channel** between the vehicle and the office other than a phone call.
 </Note>
 
 Drivers departed the warehouse each morning with nothing but a printed sheet of delivery addresses. Any change — a wrong address, a last-minute re-route, unexpected traffic — stayed invisible to the office team until a driver picked up the phone. The result was a steady stream of inbound calls asking "where is my order?", with no reliable data to answer them and no way to make informed dispatch decisions.
 
 ## The solution
+
+The system replaces the paper sheet with two connected applications — a web dashboard for the logistics office and an Android app for drivers — sharing a single source of truth.
 
 <CardGroup cols={2}>
   <Card
@@ -34,6 +38,8 @@ Drivers departed the warehouse each morning with nothing but a printed sheet of 
 </CardGroup>
 
 ## Key outcomes
+
+The transition from paper to live GPS tracking produced three measurable improvements for Scanmex operations.
 
 <CardGroup cols={3}>
   <Card

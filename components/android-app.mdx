@@ -47,6 +47,8 @@ The Android app runs on Zebra rugged terminals carried by delivery drivers in th
 
 The app is developed in **Java/Kotlin** using Android Studio. Screen layouts are defined in **XML**, following the standard Android View system to produce the route list, map, and confirmation screens. The **Geolocation API** (`LocationManager`) is called on a repeating interval to request GPS fixes and forward coordinates to the server. The **Zebra SDK** (`DataWedge` / `BarcodeManager`) provides a native listener interface that fires whenever the laser scanner reads a barcode, eliminating the need to invoke the device camera.
 
+<Note>The snippets below are illustrative skeletons showing the patterns used in the app. They are not copy-paste runnable excerpts.</Note>
+
 ```kotlin DeliveryConfirmActivity.kt
 // Confirm delivery by scanning barcode with Zebra SDK
 barcodeManager.addDataListener { scanData ->
@@ -69,9 +71,9 @@ While the driver is in transit, a background service calls the Geolocation API o
 // Send GPS position to server every few seconds
 locationManager.requestLocationUpdates(
     LocationManager.GPS_PROVIDER,
-    interval = 5000L, // milliseconds
-    minDistance = 0f,
-    listener = positionListener
+    5000L,       // minimum time interval in milliseconds
+    0f,          // minimum distance in metres
+    positionListener
 )
 ```
 
