@@ -1,72 +1,55 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "theme": "mint",
-  "name": "Mintlify Starter Kit",
+  "name": "Scanmex Logistics Tracker",
+  "theme": "luma",
   "colors": {
-    "primary": "#16A34A",
-    "light": "#07C983",
-    "dark": "#15803D"
-  },
-  "favicon": "/favicon.svg",
-  "navigation": {
-    "pages": [
-      {
-        "group": "Getting Started",
-        "pages": [
-          "index",
-          "quickstart"
-        ]
-      }
-    ],
-    "global": {
-      "anchors": [
-        {
-          "anchor": "Documentation",
-          "href": "https://mintlify.com/docs",
-          "icon": "book-open-cover"
-        },
-        {
-          "anchor": "Blog",
-          "href": "https://mintlify.com/blog",
-          "icon": "newspaper"
-        }
-      ]
-    }
-  },
-  "logo": {
-    "light": "/logo/light.svg",
-    "dark": "/logo/dark.svg"
+    "primary": "#2563eb",
+    "light": "#eff6ff",
+    "dark": "#0b2545"
   },
   "navbar": {
-    "links": [
-      {
-        "label": "Support",
-        "href": "mailto:support@mintlify.com"
-      }
-    ],
     "primary": {
-      "type": "button",
-      "label": "Dashboard",
-      "href": "https://app.mintlify.com"
+      "type": "github",
+      "href": "https://github.com/aloncm/scanmexcomplement.com"
     }
-  },
-  "contextual": {
-    "options": [
-      "copy",
-      "view",
-      "chatgpt",
-      "claude",
-      "perplexity",
-      "mcp",
-      "cursor",
-      "vscode"
-    ]
   },
   "footer": {
     "socials": {
-      "x": "https://x.com/mintlify",
-      "github": "https://github.com/mintlify",
-      "linkedin": "https://linkedin.com/company/mintlify"
+      "github": "https://github.com/aloncm/scanmexcomplement.com"
     }
+  },
+  "navigation": {
+    "groups": [
+      {
+        "group": "Overview",
+        "pages": [
+          "introduction",
+          "case-study"
+        ]
+      },
+      {
+        "group": "Architecture",
+        "pages": [
+          "architecture/mvc",
+          "architecture/tech-stack",
+          "architecture/sap-integration"
+        ]
+      },
+      {
+        "group": "Components",
+        "pages": [
+          "components/web-dashboard",
+          "components/android-app"
+        ]
+      },
+      {
+        "group": "Developer Resources",
+        "pages": [
+          "resources/glossary",
+          "resources/ai-tools",
+          "resources/recommended-courses"
+        ]
+      }
+    ]
   }
 }

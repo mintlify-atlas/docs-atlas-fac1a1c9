@@ -1,0 +1,85 @@
+---
+title: "Android App: GPS Tracking and Barcode Delivery Confirmation"
+sidebarTitle: "Android App"
+description: "Android app for Zebra rugged terminals that loads driver routes, broadcasts live GPS coordinates, and confirms deliveries with a laser barcode scanner."
+---
+
+The Android app runs on Zebra rugged terminals carried by delivery drivers in the field. When a driver starts their shift, the app loads the route that logistics operators assigned in the web dashboard, displays all stops on a map, and begins broadcasting the device's GPS coordinates back to the server every few seconds. At each delivery address the driver uses the terminal's built-in laser scanner to read the package barcode, which triggers an immediate delivery confirmation recorded in SQL Server and propagated to SAP Business One — all without paper or a phone call to the office.
+
+## Core features
+
+<CardGroup cols={2}>
+  <Card title="Route Display" icon="list-ol">
+    Shows all delivery stops plotted on a map in sequence — no paper route sheet needed. The driver sees exactly where to go next.
+  </Card>
+  <Card title="GPS Broadcasting" icon="location-dot">
+    Sends the device's coordinates to the server every few seconds via the Geolocation API so the office can track every vehicle in real time.
+  </Card>
+  <Card title="Barcode Scanning" icon="barcode">
+    Uses the Zebra SDK's laser scanner to read package barcodes and confirm each delivery instantly — faster and more reliable than camera-based scanning.
+  </Card>
+  <Card title="Real-time Sync" icon="arrows-rotate">
+    Delivery confirmations update SQL Server and SAP Business One immediately, keeping the web dashboard and the ERP in sync without any manual re-entry.
+  </Card>
+</CardGroup>
+
+## Driver workflow
+
+<Steps>
+  <Step title="Power on the Zebra terminal and open the app">
+    The driver powers on the Zebra rugged terminal at the start of the shift and opens the logistics app, which authenticates against the SQL Server backend.
+  </Step>
+  <Step title="App loads the assigned route from the server">
+    The app fetches the sequenced route created by logistics operators from SQL Server and presents the list of stops ready to navigate.
+  </Step>
+  <Step title="Stops appear on the map — driver navigates to first address">
+    All delivery stops are plotted on the map view. The driver taps the first stop to get turn-by-turn directions and sets off on the route.
+  </Step>
+  <Step title="Scan the package barcode at each stop">
+    At each address the driver aims the terminal's laser scanner at the package barcode. The Zebra SDK reads the code instantly and passes it to the confirmation handler.
+  </Step>
+  <Step title="Delivery confirmed, position logged, and SAP updated in background">
+    The app marks the stop as delivered, records the GPS coordinates of the confirmation event, and posts the update to SAP Business One through the Service Layer — all in the background while the driver moves to the next stop.
+  </Step>
+</Steps>
+
+## Tech implementation
+
+The app is developed in **Java/Kotlin** using Android Studio. Screen layouts are defined in **XML**, following the standard Android View system to produce the route list, map, and confirmation screens. The **Geolocation API** (`LocationManager`) is called on a repeating interval to request GPS fixes and forward coordinates to the server. The **Zebra SDK** (`DataWedge` / `BarcodeManager`) provides a native listener interface that fires whenever the laser scanner reads a barcode, eliminating the need to invoke the device camera.
+
+```kotlin DeliveryConfirmActivity.kt
+// Confirm delivery by scanning barcode with Zebra SDK
+barcodeManager.addDataListener { scanData ->
+    val barcode = scanData.data
+    viewModel.confirmDelivery(barcode) // updates SQL Server + SAP
+}
+```
+
+## Zebra SDK integration
+
+<Info>
+  Zebra terminals are rugged Android devices built for warehousing and logistics environments — they are drop-resistant, dust-proof, and ergonomically shaped for one-handed scanning. The Zebra SDK provides native, low-level access to the device's integrated laser barcode scanner hardware. Standard Android Camera-based barcode scanning (e.g., ML Kit) is not used; the laser scanner is significantly faster, works in bright sunlight and at longer ranges, and does not require the driver to aim a camera precisely at the label.
+</Info>
+
+## GPS position reporting
+
+While the driver is in transit, a background service calls the Geolocation API on a fixed interval to obtain the current GPS fix and POST the coordinates to the server. The web dashboard consumes these updates to animate vehicle markers on the live fleet map.
+
+```kotlin LocationService.kt
+// Send GPS position to server every few seconds
+locationManager.requestLocationUpdates(
+    LocationManager.GPS_PROVIDER,
+    interval = 5000L, // milliseconds
+    minDistance = 0f,
+    listener = positionListener
+)
+```
+
+<CardGroup cols={2}>
+  <Card title="Web Dashboard" icon="display" href="/components/web-dashboard">
+    See how the MVC dashboard consumes GPS updates, assigns routes, and monitors deliveries in real time.
+  </Card>
+  <Card title="Tech Stack" icon="layer-group" href="/architecture/tech-stack">
+    Review the full technology stack shared across both applications and the SQL Server database.
+  </Card>
+</CardGroup>

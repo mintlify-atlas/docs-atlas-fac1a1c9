@@ -1,0 +1,74 @@
+---
+title: "Scanmex Case Study: Replacing Paper Routes with GPS Tracking"
+sidebarTitle: "Case Study"
+description: "How Scanmex replaced paper address sheets with GPS tracking: a web dashboard and Android app built on SQL Server and SAP Business One Service Layer."
+---
+
+At Scanmex, delivery drivers started every shift the same way: they walked out of the warehouse with a printed sheet of addresses and drove their route alone. If a street was misspelled, if a customer had moved, or if traffic made the planned order impossible, no one in the office knew. The only communication channel was a phone call. This created two persistent operational problems — the company could not see where its fleet was, and it could not tell customers when to expect their deliveries.
+
+## The problem
+
+### Lost fleet visibility
+
+Once a driver left the warehouse, the company lost all visibility into the vehicle's position. There was no way to confirm whether a delivery had been attempted, completed, or skipped. Supervisors could not redistribute work if a driver fell behind, and there was no audit trail to resolve disputes with customers. Every day ended with incomplete information that had to be pieced together from memory and phone notes.
+
+### No customer ETA
+
+Because the office had no real-time data on driver progress, it could not provide customers with meaningful delivery windows. Customers called in repeatedly asking for updates, each call consuming staff time without adding value. The root cause was not a lack of effort — it was a fundamental gap in the data infrastructure. Without knowing where drivers were, the company simply had no honest answer to give.
+
+## The solution: two screens, one truth
+
+The project connects two applications that share the same data, eliminating the paper sheet entirely.
+
+<Steps>
+  <Step title="Logistics creates the route in the Dashboard">
+    The office team opens the web dashboard — built with C# and ASP.NET Core 8 MVC — and assembles the day's delivery route directly from the orders already registered in SAP Business One. No re-keying, no spreadsheets.
+  </Step>
+  <Step title="Driver opens the app on their Zebra terminal">
+    The driver picks up their Zebra rugged terminal, launches the Android app, and sees all their assigned stops plotted on a map. The printed address sheet stays in the drawer.
+  </Step>
+  <Step title="App streams GPS position every few seconds">
+    While the driver is on the road, the app continuously sends the device's GPS coordinates to the server. The dashboard map updates in near-real time, giving the logistics team a live view of the entire fleet.
+  </Step>
+  <Step title="Driver scans the package barcode at each stop">
+    At every delivery address, the driver uses the terminal's built-in laser scanner to read the package barcode and confirm the delivery. The scan is timestamped and linked to the order record.
+  </Step>
+  <Step title="Office sees progress live; SAP updates automatically">
+    As confirmations arrive, the dashboard reflects the current state of the route instantly. Simultaneously, the delivery status is written back to SAP Business One through the Service Layer — no one needs to enter the same data twice.
+  </Step>
+</Steps>
+
+## System architecture
+
+Both applications share a single SQL Server database that acts as the authoritative store for routes, stops, GPS traces, and delivery confirmations. Integration with SAP Business One runs through its OData v4 Service Layer — a REST-style API that allows the system to read open orders when building a route and to write delivery outcomes back to the ERP once a package is scanned. The Android app communicates with the same backend API used by the dashboard, so there is only one version of the truth regardless of which screen you are looking at.
+
+<Tip>
+  Because the Service Layer integration handles order ingestion and delivery write-back automatically, **no data needs to be entered twice**. A record created in SAP flows into the dashboard, travels to the driver's terminal, and returns to SAP as a completed delivery — all without a second keystroke.
+</Tip>
+
+## Results
+
+<Note>
+  The project delivered **complete fleet traceability** — every vehicle's position visible at any moment — alongside a measurable reduction in status calls and the elimination of manual data reconciliation between the app and SAP.
+</Note>
+
+- **Full fleet traceability:** supervisors can see every vehicle's live position and delivery progress on the dashboard map at any moment during the shift.
+- **Fewer "have you arrived?" calls:** because delivery progress is visible in real time, both staff and customers have access to current status without needing to phone the driver.
+- **Reliable data for decisions:** timestamped scan records and GPS traces give the operations team an accurate audit trail they can use to resolve disputes, optimize routes, and plan future capacity.
+
+<CardGroup cols={2}>
+  <Card
+    title="MVC Architecture"
+    icon="sitemap"
+    href="/architecture/mvc"
+  >
+    How the ASP.NET Core 8 MVC pattern structures the web dashboard — models, controllers, and Razor views explained.
+  </Card>
+  <Card
+    title="Tech Stack"
+    icon="layer-group"
+    href="/architecture/tech-stack"
+  >
+    Every technology used across both applications: C#, SQL Server, Java/Kotlin, Zebra SDK, SAP Service Layer, and more.
+  </Card>
+</CardGroup>

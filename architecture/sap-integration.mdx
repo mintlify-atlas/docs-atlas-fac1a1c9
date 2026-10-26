@@ -1,0 +1,63 @@
+---
+title: "SAP Business One Service Layer Integration"
+sidebarTitle: "SAP Integration"
+description: "How Scanmex connects to SAP Business One via the OData v4 Service Layer REST API to sync delivery confirmations with ERP sales orders automatically."
+---
+
+SAP Business One is the enterprise resource planning system (ERP) that Scanmex uses to manage sales orders, customer records, and business partner data. Rather than keeping logistics operations and ERP data in separate silos that require manual reconciliation, the Scanmex system connects directly to SAP through the **SAP Business One Service Layer** — a REST API built on the OData v4 standard. This integration means that when a driver confirms a delivery on their Zebra terminal, the corresponding order record in SAP is updated automatically, with no duplicate data entry and no risk of the two systems falling out of sync.
+
+## What Is the SAP Service Layer?
+
+The SAP Business One Service Layer is an **OData v4 REST API** that SAP exposes alongside the Business One server installation. It allows external applications — such as the Scanmex dashboard — to read and write SAP business objects (sales orders, deliveries, business partners, items, and more) using standard HTTP methods: `GET` to read, `POST` to create, `PATCH` to update, and `DELETE` to remove records.
+
+The key advantage of the Service Layer over older SAP integration methods (such as the DI API COM object) is that it is language-agnostic. Any environment that can make an HTTP call — C#, Java, Python, or even a shell script — can communicate with SAP through it. For the Scanmex dashboard, this means the ASP.NET Core 8 C# backend calls the Service Layer exactly as it would call any other REST API, using `HttpClient` with JSON payloads and OData query parameters.
+
+## Integration Flow
+
+The following steps describe the complete lifecycle of an order from the moment it appears in SAP to the moment the delivery is confirmed in the field.
+
+<Steps>
+  <Step title="Dashboard queries SAP for open orders">
+    When a logistics operator opens the route planning screen, the ASP.NET Core dashboard sends an authenticated HTTP `GET` request to the SAP Service Layer, querying for all sales orders with an open status (`DocumentStatus eq 'bost_Open'`). The Service Layer returns a JSON response containing the matching order records.
+  </Step>
+  <Step title="Orders are imported into SQL Server and assigned to a route">
+    The Controller layer receives the SAP response, maps each order to the local SQL Server schema, and persists the records. The operator then selects which orders to include in a driver's route for the day. The route assignment is saved to SQL Server and immediately becomes visible in the Android app on the driver's Zebra terminal.
+  </Step>
+  <Step title="Driver confirms delivery via barcode scan">
+    At each delivery stop, the driver uses the Zebra terminal's built-in laser scanner to scan the barcode on the package. The Android app records the confirmation along with a GPS timestamp and sends the event to the server via a REST call to the Scanmex backend.
+  </Step>
+  <Step title="Server calls SAP Service Layer to update the record">
+    Upon receiving the delivery confirmation, the ASP.NET Core backend calls the SAP Service Layer with an HTTP `PATCH` request, updating the corresponding delivery or sales order document status in SAP Business One to reflect the completed delivery.
+  </Step>
+  <Step title="SAP reflects the confirmed delivery — no manual re-entry">
+    The sales order in SAP Business One now shows the updated delivery status. Finance and operations staff can see the confirmation directly in SAP without anyone having to manually enter or reconcile delivery data — the two systems stay in sync automatically through the integration layer.
+  </Step>
+</Steps>
+
+## Connection Credentials
+
+<Warning>
+  The SQL Server connection string used to reach the Scanmex database — including the credentials that in turn authorize calls to the SAP Service Layer — is stored under the constant `sqlconsap`, with the credentials **encrypted in Base64**. While Base64 encoding prevents casual inspection, it is **not encryption** and must never be committed to version control as a hardcoded string. In a production environment, always store `sqlconsap` and any SAP credentials using **ASP.NET Core User Secrets** (for local development) or **environment variables / a secrets manager** (for staging and production deployments). Exposing these credentials in a public repository would grant full access to both the SQL Server database and the SAP Business One instance.
+</Warning>
+
+## Testing the API
+
+Before writing a single line of C# integration code, it is strongly recommended to test each SAP Service Layer endpoint in **Postman**. Postman lets you craft HTTP requests, inspect the full JSON response, and confirm that your OData filter expressions return the expected records — all without compiling and deploying the application. Once the request works correctly in Postman, translating it to `HttpClient` calls in C# is straightforward.
+
+The example below shows a Postman-style request for fetching all open sales orders from the Service Layer:
+
+```http
+GET /b1s/v1/Orders?$filter=DocumentStatus eq 'bost_Open'
+Authorization: Basic <base64-encoded-credentials>
+```
+
+Replace `<base64-encoded-credentials>` with the Base64 encoding of `username:password` for your SAP Business One service account. The Service Layer returns a JSON array of order objects that the Scanmex dashboard can then parse and import into SQL Server for route planning.
+
+<CardGroup cols={2}>
+  <Card title="Technical Glossary" icon="book" href="/resources/glossary">
+    Definitions for SAP, OData, SDK, and every other acronym used in this project.
+  </Card>
+  <Card title="AI Tools" icon="robot" href="/resources/ai-tools">
+    The AI-assisted tools used to plan, design, and build the Scanmex system.
+  </Card>
+</CardGroup>

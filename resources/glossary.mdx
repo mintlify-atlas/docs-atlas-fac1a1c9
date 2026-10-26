@@ -1,0 +1,51 @@
+---
+title: "Technical Glossary: Key Terms for Scanmex Logistics"
+sidebarTitle: "Glossary"
+description: "Every acronym and technical term used in Scanmex Logistics Tracker — from C# and SQL Server to the Zebra SDK and SAP Business One Service Layer."
+---
+
+This glossary covers every acronym and technical term used across the Scanmex Logistics Tracker project. Whether you are a developer joining the team or an architect reviewing the system design, you will find precise definitions for the languages, frameworks, APIs, and tools that make up both the ASP.NET Core 8 MVC dashboard and the Zebra Android application.
+
+<Accordion title="C# (C Sharp)">
+  Microsoft's primary programming language used to implement all server-side logic in the Scanmex web dashboard. Controllers, models, and data-access code are all written in C# within the ASP.NET Core 8 MVC framework.
+</Accordion>
+
+<Accordion title="SDK (Software Development Kit)">
+  A packaged set of tools, libraries, and APIs that grants an application permission to use device hardware. In the Scanmex Android app, an SDK is what allows the software to communicate with the laser barcode scanner built into Zebra rugged terminals.
+</Accordion>
+
+<Accordion title="APK (Android Package)">
+  The installer file format for Android applications. When the Scanmex Android app is compiled in Android Studio, the output is an APK that is side-loaded or deployed to each Zebra rugged terminal used by delivery drivers.
+</Accordion>
+
+<Accordion title="API (Application Programming Interface)">
+  A defined communication bridge that allows two separate systems to exchange data without exposing their internal implementation. In this project the Google Maps API is used in the dashboard to render driver positions on a live map.
+</Accordion>
+
+<Accordion title="UX / UI">
+  **UI (User Interface)** refers to the visual design of each screen — colors, layout, buttons, and typography. **UX (User Experience)** refers to the overall ease and comfort of using the application. Both the dashboard screens and the Zebra terminal layouts were prototyped using the Stitch design tool before being built in Razor views and Android XML.
+</Accordion>
+
+<Accordion title="ASP.NET Core 8 MVC">
+  Microsoft's unified, cross-platform web framework used to build the Scanmex logistics dashboard. It organizes the application into three layers — Model, View, and Controller — compiled and served as a single C# project.
+</Accordion>
+
+<Accordion title="SQL Server">
+  Microsoft's relational database engine that persists all route, delivery, and driver data for the Scanmex system. The connection string is stored in the codebase under the constant `sqlconsap`, with credentials encoded in Base64 for lightweight obfuscation.
+</Accordion>
+
+<Accordion title="SAP Business One Service Layer">
+  A REST API built on the OData v4 standard that exposes the SAP Business One ERP to external systems. The Scanmex dashboard and Android app connect to this Service Layer to read open orders and write confirmed deliveries, eliminating the need to enter the same data twice.
+</Accordion>
+
+<Accordion title="Zebra SDK">
+  The native library provided by Zebra Technologies for interacting with the physical barcode scanner integrated into Zebra rugged mobile computers. The Scanmex Android app uses this SDK to trigger the laser scanner and capture package barcodes at each delivery stop.
+</Accordion>
+
+<Accordion title="Google Antigravity">
+  An AI-assisted planning environment where AI agents help define project folder structures, MVC layer boundaries, and architecture decisions before any code is written. Used in the Scanmex project to map out the dashboard's directory layout and layer responsibilities during the planning phase.
+</Accordion>
+
+<Note>
+  For a deeper look at how the SAP Business One Service Layer is integrated into the Scanmex system — including OData v4 request patterns and authentication — see the [SAP Integration](/architecture/sap-integration) page.
+</Note>

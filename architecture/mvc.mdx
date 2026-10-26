@@ -1,0 +1,72 @@
+---
+title: "MVC Architecture in the Scanmex Dashboard"
+sidebarTitle: "MVC Pattern"
+description: "Learn how ASP.NET Core 8 MVC separates the Scanmex logistics dashboard into Views, Controllers, and Models for clean, maintainable C# code."
+---
+
+The Scanmex web dashboard is built on ASP.NET Core 8 MVC — a battle-tested architectural pattern that divides a web application into three distinct layers: Model, View, and Controller. For a logistics dashboard that must display live driver maps, manage route assignments, and synchronize with both SQL Server and SAP Business One simultaneously, MVC provides clear boundaries between what the user sees, the business logic that drives it, and the data layer that stores everything. Each layer can be developed, tested, and maintained independently, which significantly reduces the complexity of building features like real-time delivery tracking.
+
+## The Three Layers
+
+<Tabs>
+  <Tab title="View">
+    The View is everything the logistics operator sees and touches in the browser — the route map, the delivery table, and the "Assign Route" button. Views are built with **HTML and Razor templates** (`.cshtml` files), which allow C# expressions to be embedded directly into the markup so that dynamic data such as driver positions and order statuses can be rendered server-side before the page reaches the browser.
+
+    A key principle of the View layer is that it **never communicates directly with the database or SAP**. The operator interacts with the interface; the interface never touches storage. All data the View displays arrives pre-packaged from the Controller, keeping the presentation layer focused purely on rendering.
+  </Tab>
+  <Tab title="Controller">
+    The Controller is the C# code that sits between the user interface and the data layer. When a logistics operator clicks **"Assign Route"** in the dashboard, the HTTP request lands in the corresponding controller action method. The Controller is responsible for:
+
+    - **Receiving** the incoming HTTP request and reading any form data or route parameters
+    - **Validating** the input (for example, verifying that a driver and a set of stops have actually been selected)
+    - **Querying the Model** to retrieve or persist data — fetching open orders from SQL Server, or pushing an update to SAP Business One via the Service Layer
+    - **Returning an updated View** with the fresh data so the operator immediately sees the result of their action
+
+    Because all business logic lives here rather than in the View or sprinkled across JavaScript, the entire request lifecycle is traceable and testable.
+  </Tab>
+  <Tab title="Model">
+    The Model is the data layer of the application. In the Scanmex dashboard it encompasses two interconnected systems:
+
+    - **SQL Server** — the relational database that persists routes, driver locations, delivery confirmations, and application credentials. The SQL Server connection string is stored under the constant `sqlconsap`, with credentials encrypted in Base64 to avoid plaintext secrets in configuration files.
+    - **SAP Business One Service Layer** — an OData v4 REST API that exposes the company's ERP data (sales orders, deliveries, business partners). The Model layer calls this API to import open orders into the dashboard and to write back confirmed deliveries, ensuring that logistics data and financial data are always in sync.
+
+    The Model never knows about HTTP requests or Razor templates. It only knows how to store, retrieve, and process information.
+  </Tab>
+</Tabs>
+
+## Restaurant Analogy
+
+<Note>
+  Think of MVC as a restaurant. The **View** is the diner — the person sitting at the table who reads the menu and places an order without ever stepping into the kitchen. The **Controller** is the waiter — the go-between who takes the order from the table, carries it to the kitchen, and returns with the finished plate. The **Model** is the kitchen — the place where ingredients are stored and dishes are actually prepared. In Scanmex terms: the diner sees maps and delivery tables, the waiter is the C# controller that handles every button click, and the kitchen is SQL Server together with the SAP Service Layer.
+</Note>
+
+## MVC Request Flow
+
+The following steps trace a concrete example: a logistics operator assigns a route to a driver from the dashboard.
+
+<Steps>
+  <Step title="User clicks 'Assign Route'">
+    The operator selects a driver and a set of stops on the map, then clicks the **Assign Route** button. The browser sends an HTTP POST request to the server, carrying the selected driver ID and stop list as form data.
+  </Step>
+  <Step title="Controller receives the action">
+    ASP.NET Core routes the request to the matching controller action method — for example, `RouteController.Assign()`. The Controller reads the form data, validates that both a driver and at least one stop were provided, and rejects the request with a validation error if anything is missing.
+  </Step>
+  <Step title="Model queries SQL Server">
+    With valid input confirmed, the Controller calls the Model layer. The Model executes the necessary SQL queries against SQL Server to persist the new route assignment and, if needed, calls the SAP Business One Service Layer to link the assignment to open sales orders in the ERP.
+  </Step>
+  <Step title="Controller passes data to the View">
+    Once the Model returns success, the Controller builds a view model — a C# object containing the updated list of routes, driver positions, and any status messages — and passes it to the Razor View template via `return View(viewModel)`.
+  </Step>
+  <Step title="User sees the updated map">
+    The Razor template renders the updated data into HTML. The operator's browser displays the refreshed map with the newly assigned driver route plotted, and the delivery table reflects the current assignment — all without the operator having to manually refresh the page.
+  </Step>
+</Steps>
+
+<CardGroup cols={2}>
+  <Card title="Web Dashboard" icon="display" href="/components/web-dashboard">
+    Explore the features and screens of the logistics web dashboard.
+  </Card>
+  <Card title="Tech Stack" icon="layer-group" href="/architecture/tech-stack">
+    See every technology used across the dashboard and the Android app.
+  </Card>
+</CardGroup>

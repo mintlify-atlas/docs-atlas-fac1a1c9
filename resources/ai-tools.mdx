@@ -1,0 +1,66 @@
+---
+title: "AI Tools Used to Build the Scanmex Logistics System"
+sidebarTitle: "AI Tools"
+description: "A catalogue of the 8 AI and developer tools used across the four phases of building Scanmex Logistics Tracker — planning, design, coding, and testing."
+---
+
+Building the Scanmex Logistics Tracker involved a set of AI-assisted tools at every phase of development — planning, design, coding, and testing. Rather than reaching for a single AI assistant, each phase called for a different instrument. This page catalogues each tool and describes exactly how it was used in this project, so future contributors can reproduce the same workflow or substitute equivalent alternatives.
+
+<Tabs>
+  <Tab title="Planning">
+    <CardGroup cols={2}>
+      <Card title="Obsidian" icon="note-sticky">
+        Markdown-based note-taking app where project requirements, architecture decisions, and the residency log are kept in one place. Notes link to each other for quick cross-reference, making it easy to trace a design decision back to its original requirement.
+      </Card>
+      <Card title="Google Antigravity" icon="robot">
+        An AI agent environment used to plan the folder structure and MVC layers before writing the first line of code. By describing the system's goals in plain language, the agent returned a recommended project layout that shaped the entire dashboard architecture.
+      </Card>
+    </CardGroup>
+  </Tab>
+
+  <Tab title="Design">
+    <CardGroup cols={1}>
+      <Card title="Stitch" icon="pen-ruler">
+        Google tool that generates screen mockups from a text description. Used to sketch the web dashboard layout and the Zebra terminal screens before implementing them in Razor views and Android XML layouts — allowing the team to validate the user flow without writing a single line of frontend code.
+      </Card>
+    </CardGroup>
+  </Tab>
+
+  <Tab title="Coding">
+    <CardGroup cols={2}>
+      <Card title="Claude" icon="message-bot">
+        AI assistant used to explain C# compiler errors, review SQL queries for correctness and performance, and help write documentation text. Particularly useful when debugging ASP.NET Core middleware configuration and connection string handling.
+      </Card>
+      <Card title="GitHub Copilot" icon="github">
+        In-editor code suggestion tool running inside Visual Studio and VS Code that accelerates writing controllers, model classes, and repetitive boilerplate. Reduced the time spent on scaffolding standard CRUD operations for the dashboard's route management screens.
+      </Card>
+      <Card title="Gemini in Android Studio" icon="sparkles">
+        Google's AI assistant embedded directly in Android Studio, supporting Kotlin and Java code completion, Android XML layout editing, and guidance on using the Geolocation API to stream driver positions to the server.
+      </Card>
+      <Card title="Dots Studio" icon="circle-dot">
+        The AI lab behind the `dots.llm` and `dots.ocr` models. The OCR model is capable of reading printed text from delivery note photographs, which could be used to auto-fill order data from a photo of a paper waybill — reducing manual data entry at the warehouse.
+      </Card>
+    </CardGroup>
+  </Tab>
+
+  <Tab title="Testing & Docs">
+    <CardGroup cols={1}>
+      <Card title="Postman" icon="paper-plane">
+        API testing tool used to send HTTP requests directly to the SAP Business One Service Layer before any C# integration code was written. Confirms that the OData v4 endpoints return the expected payload structure and authentication flow, catching integration bugs before they reach production.
+      </Card>
+    </CardGroup>
+  </Tab>
+</Tabs>
+
+<Tip>
+  AI tools are most effective when used at the right phase. Obsidian and Antigravity prevent architectural mistakes early, when changes are cheap. Copilot and Claude accelerate coding by handling boilerplate and explaining errors in context. Postman catches integration bugs before they reach production — where they are expensive to fix.
+</Tip>
+
+<CardGroup cols={2}>
+  <Card title="Recommended Courses" icon="graduation-cap" href="/resources/recommended-courses">
+    Browse the curated course list covering full-stack web development, DevOps, and programming logic.
+  </Card>
+  <Card title="Glossary" icon="book" href="/resources/glossary">
+    Look up every acronym and technical term used across the Scanmex Logistics Tracker project.
+  </Card>
+</CardGroup>

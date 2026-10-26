@@ -1,0 +1,79 @@
+---
+title: "Web Dashboard: Route Assignment and Live Fleet Map"
+sidebarTitle: "Web Dashboard"
+description: "C# ASP.NET Core 8 MVC dashboard for logistics operators to create driver routes, monitor a live GPS fleet map, and sync every update with SAP Business One."
+---
+
+The web dashboard is built with C# and ASP.NET Core 8 MVC and is used by logistics operators at Scanmex headquarters. From a single browser interface, operators can import pending orders from SAP Business One, assemble and sequence them into driver routes, and watch every active vehicle move across a live Google Maps view as deliveries are completed throughout the day.
+
+## Core features
+
+<CardGroup cols={2}>
+  <Card title="Route Assignment" icon="route">
+    Pull open orders from SAP Business One and sequence them into a named driver route — no spreadsheet or paper sheet required.
+  </Card>
+  <Card title="Live GPS Map" icon="map-pin">
+    Watch all active drivers update their positions in real time via the Google Maps API, giving the office full visibility of the fleet.
+  </Card>
+  <Card title="Delivery Monitoring" icon="check-circle">
+    See confirmed deliveries update automatically as drivers scan packages in the field, so the office always has an accurate count.
+  </Card>
+  <Card title="SAP Sync" icon="rotate">
+    Every route change and delivery confirmation writes back to SAP Business One automatically through the OData v4 Service Layer — no double entry.
+  </Card>
+</CardGroup>
+
+## Daily workflow
+
+<Steps>
+  <Step title="Open the dashboard and log in">
+    The logistics operator opens the web dashboard in a browser and authenticates with their credentials stored in SQL Server.
+  </Step>
+  <Step title="Import pending orders from SAP Business One">
+    The operator triggers a pull from the SAP Business One Service Layer, which returns all open sales orders via the OData v4 API and loads them into the dashboard.
+  </Step>
+  <Step title="Assign orders to drivers, creating sequenced routes">
+    Orders are selected and assigned to a specific driver. The dashboard saves a sequenced route record — each stop is numbered and tied to a delivery address.
+  </Step>
+  <Step title="Monitor the live map as drivers begin their rounds">
+    As drivers start moving, the Android app broadcasts GPS coordinates every few seconds. The dashboard map updates in real time so the office can see each vehicle's current position.
+  </Step>
+  <Step title="Confirm all deliveries are marked complete at end of day">
+    The operator reviews the delivery monitoring panel to verify every stop has been confirmed. Any unconfirmed stop is flagged for follow-up before the day closes.
+  </Step>
+</Steps>
+
+## Tech implementation
+
+<Tabs>
+  <Tab title="Backend (C#)">
+    The server side is built on ASP.NET Core 8 MVC. **Controllers** handle all route logic: they receive HTTP requests from Razor views, validate input, execute SQL queries against SQL Server, and dispatch OData v4 calls to the SAP Business One Service Layer. **Models** map directly to the SQL Server tables that store routes, stops, drivers, and delivery confirmations. When a route is saved or a delivery confirmed, the controller also sends the corresponding update to SAP so the ERP stays consistent without any manual re-entry.
+
+    ```csharp RouteController.cs
+    [HttpPost]
+    public async Task<IActionResult> AssignRoute(int driverId, List<int> orderIds)
+    {
+        // 1. Validate driver exists in SQL Server
+        // 2. Insert route record with sequenced stops
+        // 3. Call SAP Service Layer to update order status
+        return RedirectToAction("Index");
+    }
+    ```
+  </Tab>
+  <Tab title="Frontend">
+    Each screen is rendered by a **Razor view** (`.cshtml`), which combines C# model data with standard HTML markup served from the MVC framework. **JavaScript** powers the Google Maps integration: it initialises the map, draws route polylines, and polls the server for updated driver coordinates to animate vehicle markers in real time. **CSS3** handles all visual styling — layout, colour tokens, hover states, and responsive breakpoints — without any external CSS framework dependency.
+  </Tab>
+</Tabs>
+
+<Note>
+  The dashboard shares the same SQL Server database as the Android app. When a driver confirms a delivery on the Zebra terminal, the record is written directly to SQL Server and appears in the dashboard immediately — there is no synchronisation delay between the two applications.
+</Note>
+
+<CardGroup cols={2}>
+  <Card title="Android App" icon="mobile" href="/components/android-app">
+    Learn how the Zebra terminal app receives routes, broadcasts GPS, and confirms deliveries via barcode scan.
+  </Card>
+  <Card title="SAP Integration" icon="link" href="/architecture/sap-integration">
+    Explore how the OData v4 Service Layer connects both applications to SAP Business One.
+  </Card>
+</CardGroup>

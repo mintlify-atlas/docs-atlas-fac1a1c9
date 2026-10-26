@@ -1,0 +1,61 @@
+---
+title: "Scanmex Logistics Tracker: System Overview"
+sidebarTitle: "Introduction"
+description: "Two-app logistics system for Scanmex: a C# ASP.NET Core 8 MVC web dashboard and an Android app for Zebra terminals, both synced to SAP Business One."
+---
+
+Scanmex Logistics Tracker is a two-application system that replaces paper-based delivery workflows with real-time GPS tracking. Before the project, drivers left the warehouse carrying printed address sheets — if a street name was wrong, a customer moved, or traffic forced a detour, the office had no way to know until a driver called in. The solution connects a web dashboard for the logistics team with an Android app for drivers on Zebra rugged terminals, both sharing a single SQL Server database and synchronized with SAP Business One through its OData v4 Service Layer.
+
+## The problem
+
+<Note>
+  Scanmex faced two root problems: the company had **no visibility into where its fleet was at any moment**, and it could **not give customers any ETA** for their incoming deliveries.
+</Note>
+
+Drivers departed the warehouse each morning with nothing but a printed sheet of delivery addresses. Any change — a wrong address, a last-minute re-route, unexpected traffic — stayed invisible to the office team until a driver picked up the phone. The result was a steady stream of inbound calls asking "where is my order?", with no reliable data to answer them and no way to make informed dispatch decisions.
+
+## The solution
+
+<CardGroup cols={2}>
+  <Card
+    title="Web Dashboard"
+    icon="display"
+    href="/components/web-dashboard"
+  >
+    Built with C# and ASP.NET Core 8 MVC. The logistics team uses it to create routes from SAP orders and watch every vehicle move on a live map.
+  </Card>
+  <Card
+    title="Android App"
+    icon="mobile"
+    href="/components/android-app"
+  >
+    Runs on Zebra rugged terminals carried by drivers. It shows stops on a map, streams GPS position every few seconds, and uses the built-in laser scanner to confirm each package delivery.
+  </Card>
+</CardGroup>
+
+## Key outcomes
+
+<CardGroup cols={3}>
+  <Card
+    title="Full fleet traceability"
+    icon="map-pin"
+  >
+    Every vehicle's position is visible on the dashboard in real time, eliminating blind spots in the delivery chain.
+  </Card>
+  <Card
+    title="Fewer status calls"
+    icon="phone-slash"
+  >
+    Because customers and staff can track progress live, the volume of "have you arrived yet?" calls drops significantly.
+  </Card>
+  <Card
+    title="Single data entry via SAP sync"
+    icon="rotate"
+  >
+    Deliveries confirmed in the app update SAP Business One automatically — no double data entry, no manual reconciliation.
+  </Card>
+</CardGroup>
+
+## Project context
+
+Scanmex Logistics Tracker was developed as a professional residency (*residencia profesional*) by Alonso Alberto Cortés Morales at Instituto Tecnológico de Álvaro Obregón (ITAO). The project was carried out within a real company environment, giving the system genuine operational requirements: an existing SAP Business One installation, an active fleet of Zebra rugged terminals, and a logistics team that needed a practical tool rather than a prototype. For a detailed walkthrough of the before-and-after workflow and the architectural decisions made along the way, see the [case study](/case-study).

@@ -1,0 +1,63 @@
+{
+  "projectType": "general",
+  "projectName": "Scanmex Logistics Tracker",
+  "projectDescription": "A logistics tracking system built for Scanmex that replaces paper-based delivery routes with a real-time GPS web dashboard and a Zebra terminal Android app integrated with SAP Business One.",
+  "theme": "luma",
+  "primaryColor": "#2563eb",
+  "lightColor": "#eff6ff",
+  "darkColor": "#0b2545",
+  "navigation": {
+    "groups": [
+      {
+        "group": "Overview",
+        "pages": [
+          "introduction",
+          "case-study"
+        ]
+      },
+      {
+        "group": "Architecture",
+        "pages": [
+          "architecture/mvc",
+          "architecture/tech-stack",
+          "architecture/sap-integration"
+        ]
+      },
+      {
+        "group": "Components",
+        "pages": [
+          "components/web-dashboard",
+          "components/android-app"
+        ]
+      },
+      {
+        "group": "Developer Resources",
+        "pages": [
+          "resources/glossary",
+          "resources/ai-tools",
+          "resources/recommended-courses"
+        ]
+      }
+    ]
+  },
+  "keyFeatures": [
+    "Real-time GPS fleet tracking via web dashboard",
+    "Android app for Zebra rugged terminals with barcode scanning",
+    "ASP.NET Core 8 MVC web dashboard built in C#",
+    "SAP Business One Service Layer (OData v4) integration",
+    "SQL Server backend shared by both applications",
+    "Automatic delivery confirmation synced to SAP without double entry",
+    "Interactive MVC architecture explainer with restaurant analogy",
+    "Filterable technical glossary covering 10+ key terms",
+    "Curated AI tools catalogue organized by development phase"
+  ],
+  "publicApiSurface": [
+    "Web Dashboard (C# / ASP.NET Core 8 MVC) — route assignment and live map",
+    "Android App (Java/Kotlin) — delivery list, GPS broadcast, barcode scan confirmation",
+    "SAP Business One Service Layer REST/OData v4 — order synchronization",
+    "SQL Server database — shared persistence layer (connection string constant: sqlconsap)",
+    "Google Maps API — driver position visualization",
+    "Zebra SDK — barcode/laser scanner integration",
+    "Geolocation API — periodic GPS position reporting from the mobile app"
+  ]
+}
